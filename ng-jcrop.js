@@ -25,7 +25,8 @@
         jcrop: {
             aspectRatio: 1,
             maxWidth: 300,
-            maxHeight: 300
+            maxHeight: 300,
+            applyRatioToSelection: true
         }
     })
 
@@ -97,7 +98,7 @@
 
         return {
             restrict: 'A',
-            scope: { ngJcrop: '=', thumbnail: '=', selection: '=', ngJcropConfigName: '@' },
+            scope: { ngJcrop: '=', thumbnail: '=', selection: '=', ngJcropConfigName: '@', coordsRatio: '='},
             template: ngJcropConfig.template,
             controller: 'JcropController'
         };
@@ -213,7 +214,7 @@
         $scope.getShrinkRatio = function(){
             var img = $('<img>').attr('src', $scope.mainImg[0].src)[0];
 
-            if(ngJcropConfig.jcrop.maxWidth > img.width || ngJcropConfig.jcrop.maxHeight > img.height){
+            if(ngJcropConfig.jcrop.maxWidth > img.width && ngJcropConfig.jcrop.maxHeight > img.height){
                 return 1;
             }
 
@@ -248,7 +249,8 @@
             $scope.coords[4] = coords.w;
             $scope.coords[5] = coords.h;
 
-            var shrinkRatio = $scope.getShrinkRatio();
+            $scope.coordsRatio = $scope.getShrinkRatio();
+            var shrinkRatio = ngJcropConfig.jcrop.applyRatioToSelection ? $scope.coordsRatio : 1;
             $scope.selection[0] = Math.round(coords.x * shrinkRatio);
             $scope.selection[1] = Math.round(coords.y * shrinkRatio);
             $scope.selection[2] = Math.round(coords.x2 * shrinkRatio);
